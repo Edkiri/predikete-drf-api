@@ -7,7 +7,6 @@ from django.template.loader import render_to_string
 
 # Django REST Framework
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 
 # Serializers
@@ -41,6 +40,7 @@ class UserModelSerializer(serializers.ModelSerializer):
             'email',
             'profile'
         )
+        read_only_fields = ('email', 'profile', 'username',)
 
 
 class UserLoginSerializer(serializers.Serializer):

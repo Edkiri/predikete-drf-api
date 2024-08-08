@@ -22,7 +22,7 @@ from api.users.serializers import (
 )
 
 
-class UserViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     """User view set.
 
     Handle sign up and login.
