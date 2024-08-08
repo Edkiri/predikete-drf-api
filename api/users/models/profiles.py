@@ -13,12 +13,7 @@ class Profile(BaseModel):
 
     user = models.OneToOneField('users.User', on_delete=models.CASCADE)
 
-    picture = models.ImageField(
-        'profile picture',
-        upload_to='users/pictures/',
-        blank=True,
-        null=True
-    )
+    picture = models.CharField(max_length=255)
     description = models.TextField(max_length=500, blank=True)
 
     def __str__(self):

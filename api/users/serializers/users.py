@@ -154,7 +154,7 @@ class AccountVerificationSerializer(serializers.Serializer):
             payload = jwt.decode(data, settings.SECRET_KEY, algorithms='HS256')
         except jwt.ExpiredSignatureError:
             raise serializers.ValidationError('Verification link has expired.')
-        except jwt.PyJWTError as error:
+        except jwt.PyJWTError:
             raise serializers.ValidationError('Invalid token')
         if payload['type'] != 'email_confirmation':
             raise serializers.ValidationError('Invalid token')
