@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api.users',
     'api.utils',
+    'api.tournaments',
+    'api.parties',
+    'seeders',
 ]
 
 MIDDLEWARE = [

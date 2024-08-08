@@ -1,3 +1,4 @@
+* [ ] Create BASIC Tournaments module and models
 * [ ] Create Memberships and Party modules
   * [ ] PartyInvitations and PartyJoinRequests
 * [ ] Send real email confirmation
