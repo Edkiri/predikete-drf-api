@@ -11,6 +11,9 @@ class Profile(BaseModel):
     picture, and statistics.
     """
 
+    class Meta:
+        db_table = 'users_profiles'
+
     user = models.OneToOneField('users.User', on_delete=models.CASCADE)
 
     picture = models.CharField(max_length=255)

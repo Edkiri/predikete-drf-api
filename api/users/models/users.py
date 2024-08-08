@@ -15,6 +15,9 @@ class User(BaseModel, AbstractUser):
     to email and add some extra fields.
     """
 
+    class Meta:
+        db_table = 'users'
+
     email = models.EmailField(
         'email address',
         unique=True,
