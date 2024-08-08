@@ -14,7 +14,4 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = Profile
-        fields = (
-            'picture',
-            'description',
-        )
+        fields = ('picture', 'description',)

@@ -4,10 +4,10 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.authentication import TokenAuthentication
 
 # Permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from api.users.permissions import IsAccountOwner
 
 # Model
 from api.users.models import User
@@ -37,7 +37,7 @@ class UserViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         if self.action in ['signup', 'login', 'verify']:
             permissions = [AllowAny]
         elif self.action in ['retrieve', 'update', 'partial_update']:
-            permissions = [IsAuthenticated]
+            permissions = [IsAuthenticated, IsAccountOwner]
         else:
             permissions = [IsAuthenticated]
         return [permission() for permission in permissions]
