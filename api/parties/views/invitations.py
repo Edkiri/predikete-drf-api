@@ -35,10 +35,10 @@ class InvitationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=True, methods=['post'])
     def accept(self, request, *args, **kwargs):
+        invitation = get_object_or_404(PartyJoinInvitation, id=kwargs['id'])
+        self.check_object_permissions(self.request, invitation)
         try:
             with transaction.atomic():
-                invitation = get_object_or_404(
-                    PartyJoinInvitation, id=kwargs['id'])
                 PartyMembership.objects.create(
                     party=invitation.party,
                     user=invitation.issued_to,
@@ -57,6 +57,7 @@ class InvitationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     @action(detail=True, methods=['post'])
     def reject(self, request, *args, **kwargs):
         invitation = get_object_or_404(PartyJoinInvitation, id=kwargs['id'])
+        self.check_object_permissions(self.request, invitation)
         invitation.delete()
         return Response(
             {'message': 'You have successfully rejected the invitation party'},

@@ -50,11 +50,4 @@ class IsPartyAdmin(BasePermission):
 class IsInvitationOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        try:
-            PartyJoinInvitation.objects.get(
-                user=request.user,
-                party=obj
-            )
-        except PartyMembership.DoesNotExist:
-            return False
-        return True
+        return obj.issued_to.id == request.user.id
