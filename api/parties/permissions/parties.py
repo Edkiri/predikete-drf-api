@@ -4,8 +4,7 @@
 from rest_framework.permissions import BasePermission
 
 # Models
-from api.parties.models import PartyMembership
-
+from api.parties.models import PartyMembership, PartyJoinInvitation
 
 class IsPartyMember(BasePermission):
     """Allow access only to party members.
@@ -45,3 +44,16 @@ class IsPartyAdmin(BasePermission):
             return False
         except PartyMembership.DoesNotExist:
             return False
+
+
+class IsInvitationOwner(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        try:
+            PartyJoinInvitation.objects.get(
+                user=request.user,
+                party=obj
+            )
+        except PartyMembership.DoesNotExist:
+            return False
+        return True

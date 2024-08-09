@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from rest_framework import serializers
 
 # Model
+from api.users.models import User
 from api.parties.models import Party
 from api.tournaments.models import Tournament
 
