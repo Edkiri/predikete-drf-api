@@ -16,4 +16,4 @@ class Tournament(BaseModel):
 
     image = models.CharField(max_length=255)
 
-    isFinished = models.BooleanField(default=False)
+    is_finished = models.BooleanField(default=False)

@@ -31,7 +31,8 @@ class Party(models.Model):
     members = models.ManyToManyField(
         'users.User',
         through='parties.PartyMembership',
-        through_fields=('party', 'user')
+        through_fields=('party', 'user'),
+        related_name='party_memberships'
     )
 
     is_public = models.BooleanField(

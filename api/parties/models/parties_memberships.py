@@ -14,8 +14,16 @@ class PartyMembership(models.Model):
     class Meta:
         db_table = 'parties_memberships'
 
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    party = models.ForeignKey('parties.Party', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE,
+        related_name='memberships'
+    )
+    party = models.ForeignKey(
+        'parties.Party',
+        on_delete=models.CASCADE,
+        related_name='memberships'
+    )
 
     is_admin = models.BooleanField(
         'party admin',
