@@ -6,6 +6,7 @@ from rest_framework.permissions import BasePermission
 # Models
 from api.parties.models import PartyMembership, PartyJoinInvitation
 
+
 class IsPartyMember(BasePermission):
     """Allow access only to party members.
 
