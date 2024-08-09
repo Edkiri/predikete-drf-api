@@ -16,20 +16,25 @@ from api.parties.serializers import PartyModelSerializer, PartyCreateSerializer
 # Models
 from api.parties.models import Party, PartyMembership
 
-# Utils
-import logging
-logger = logging.getLogger(__name__)
-
 
 class PartiesViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = Party.objects.all()
     lookup_field = 'slug_name'
+
+    def get_queryset(self):
+        """Restrict list to parties of the requesting user."""
+        queryset = Party.objects.all()
+
+        if self.action == 'list':
+            queryset = queryset.filter(members=self.request.user).distinct()
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['update', 'partial_update', 'retrieve']:
