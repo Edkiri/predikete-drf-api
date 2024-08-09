@@ -5,7 +5,6 @@ from django.db import transaction
 
 # Django REST Framework
 from rest_framework import mixins, viewsets
-from rest_framework.generics import get_object_or_404
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
@@ -26,6 +25,7 @@ class PartiesViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
     queryset = Party.objects.all()
@@ -41,7 +41,7 @@ class PartiesViewSet(
         permissions = [IsAuthenticated]
         if self.action == 'retrieve':
             permissions.append(IsPartyMember)
-        if self.action in ['update', 'partial_update']:
+        if self.action in ['update', 'partial_update', 'delete']:
             permissions.append(IsPartyAdmin)
         return [permission() for permission in permissions]
 
