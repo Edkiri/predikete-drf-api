@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 
+from django.conf.urls import handler404, handler500, handler403, handler400
+from api.utils.views import custom_page_not_found_view, custom_server_error_view, custom_permission_denied_view, custom_bad_request_view
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,10 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wn(6up-&f@b0lahp6(ankpwlz2#g9u%90$v!6pz6qo$rakv3=i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -114,6 +116,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'EXCEPTION_HANDLER': 'api.utils.exceptions.custom_exception_handler',
 }
 
 # Internationalization
@@ -176,3 +179,10 @@ LOGGING = {
         },
     },
 }
+
+
+# VIEWS
+handler404 = custom_page_not_found_view
+handler500 = custom_server_error_view
+handler403 = custom_permission_denied_view
+handler400 = custom_bad_request_view
