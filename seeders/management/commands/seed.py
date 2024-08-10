@@ -6,6 +6,9 @@ from api.users.models import User, Profile
 from api.tournaments.models import Tournament
 from api.parties.models import Party, PartyMembership
 
+# Utils
+from decouple import config
+
 
 class Command(BaseCommand):
     help = 'Seed the database with initial data'
@@ -17,9 +20,9 @@ class Command(BaseCommand):
             username='eduk',
             first_name="Eduardo",
             last_name='Kiriakos',
-            email='edu@mail.com',
+            email=config('ADMIN_EMAIL'),
         )
-        edu.set_password('Admin123...')
+        edu.set_password(config('ADMIN_PASSWORD'))
         edu.is_superuser = True
         edu.is_verified = True
         edu.is_staff = True
@@ -71,4 +74,3 @@ class Command(BaseCommand):
             is_admin=True,
         )
         self.stdout.write(self.style.SUCCESS('parties created'))
-        

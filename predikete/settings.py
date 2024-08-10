@@ -12,9 +12,14 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config, Csv
 
-from django.conf.urls import handler404, handler500, handler403, handler400
-from api.utils.views import custom_page_not_found_view, custom_server_error_view, custom_permission_denied_view, custom_bad_request_view
+from api.utils.views import (
+    custom_page_not_found_view,
+    custom_server_error_view,
+    custom_permission_denied_view,
+    custom_bad_request_view
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,13 +28,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wn(6up-&f@b0lahp6(ankpwlz2#g9u%90$v!6pz6qo$rakv3=i'
+ENVIRONMENT = config('ENVIRONMENT', default='development')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+if ENVIRONMENT == 'production':
+    DEBUG = False
+    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=Csv())
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -148,7 +156,7 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+DEFAULT_FROM_EMAIL = 'admin@localhost'
 
 
 LOGGING = {
