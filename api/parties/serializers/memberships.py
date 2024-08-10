@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 # Models
-from api.parties.models import PartyMembership, PartyJoinInvitation
+from api.parties.models import Party, PartyMembership
 from api.users.models import User
 
 # Serializers
@@ -21,40 +21,25 @@ class PartyMembershipModelSerializer(serializers.ModelSerializer):
         read_only_fields = ('user',)
 
 
-class PartyInviteUserSerializer(serializers.Serializer):
+class PartyAddMemberSerializer(serializers.Serializer):
 
-    issued_to = serializers.PrimaryKeyRelatedField(
+    party = serializers.PrimaryKeyRelatedField(
+        queryset=Party.objects.all()
+    )
+
+    user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all()
     )
 
-    def validate_issued_to(self, data):
-        """Verify user isn't already a member."""
-        user = data
-        party = self.context['party']
-
-        if user.id == self.context['request'].user.id:
+    def validate(self, data):
+        if data['party'].members.filter(id=data['user'].id).exists():
             raise serializers.ValidationError(
-                "User can not invite himself to a party"
-            )
-
-        membership = PartyMembership.objects.filter(party=party, user=user)
-        if membership.exists():
-            raise serializers.ValidationError(
-                "User is already member of this party"
-            )
-
-        join_invitation = PartyJoinInvitation.objects.filter(
-            party=party, issued_to=user)
-        if join_invitation.exists():
-            raise serializers.ValidationError(
-                "User already has been invited"
-            )
+                "User is already member of this group.")
 
         return data
 
     def save(self):
-        return PartyJoinInvitation.objects.create(
-            party=self.context['party'],
-            issued_by=self.context['request'].user,
-            issued_to=self.validated_data['issued_to']
+        PartyMembership.objects.create(
+            user=self.validated_data['user'],
+            party=self.validated_data['party']
         )

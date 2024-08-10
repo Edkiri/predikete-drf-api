@@ -12,13 +12,13 @@ from rest_framework.response import Response
 from api.parties.models import PartyJoinInvitation, PartyMembership
 
 # Serializers
-from api.parties.serializers import InvitationModelSerializer
+from api.parties.serializers import InvitationModelSerializer, PartyAddMemberSerializer
 
 # Permissions
 from api.parties.permissions import IsInvitationOwner
 
 
-class InvitationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class JoinInvitationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     lookup_field = 'id'
     serializer_class = InvitationModelSerializer
 
@@ -39,10 +39,14 @@ class InvitationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         self.check_object_permissions(self.request, invitation)
         try:
             with transaction.atomic():
-                PartyMembership.objects.create(
-                    party=invitation.party,
-                    user=invitation.issued_to,
+                add_member_serializer = PartyAddMemberSerializer(
+                    data = {
+                        'user': invitation.issued_to.id,
+                        'party': invitation.party.id
+                    }
                 )
+                add_member_serializer.is_valid(raise_exception=True)
+                add_member_serializer.save()
                 invitation.delete()
                 return Response(
                     {'message': 'You have successfully joined the party'},
@@ -50,7 +54,7 @@ class InvitationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 )
         except Exception as e:
             return Response(
-                {'error': 'An error occurred while accepting the invitation. Please try again.'},
+                {'error': 'An error occurs'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
