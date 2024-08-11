@@ -3,11 +3,8 @@
 # Django
 from django.db import models
 
-# Models
-from api.utils.models import BaseModel
 
-
-class Tournament(BaseModel):
+class Tournament(models.Model):
 
     class Meta:
         db_table = 'tournaments'
@@ -15,5 +12,7 @@ class Tournament(BaseModel):
     name = models.CharField(max_length=60)
 
     image = models.CharField(max_length=255)
+
+    start_date = models.DateField(null=True, blank=True)
 
     is_finished = models.BooleanField(default=False)
