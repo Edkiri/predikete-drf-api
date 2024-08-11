@@ -3,11 +3,14 @@ from django.core.management.base import BaseCommand
 
 # Models
 from api.users.models import User, Profile
-from api.tournaments.models import Tournament
+from api.tournaments.models import Tournament, Team, GroupStage, GroupStageDetails, Match
 from api.parties.models import Party, PartyMembership
 
 # Utils
 from decouple import config
+
+# Data
+from .data import QatarTeams, GROUP_STAGES, MATCHES
 
 
 class Command(BaseCommand):
@@ -74,3 +77,33 @@ class Command(BaseCommand):
             is_admin=True,
         )
         self.stdout.write(self.style.SUCCESS('parties created'))
+
+        for team in QatarTeams:
+            Team.objects.create(
+                name=team.value,
+                image=f"{team.value.lower()}.png"
+            )
+        self.stdout.write(self.style.SUCCESS('teams created'))
+
+        for data in GROUP_STAGES:
+            name = data.get('name')
+            for team in data.get('teams'):
+                group_stage = GroupStage.objects.create(
+                    name=name,
+                    tournament=tournament,
+                    team=Team.objects.get(name=team)
+                )
+                GroupStageDetails.objects.create(group_stage=group_stage)
+
+        self.stdout.write(self.style.SUCCESS('group stages created'))
+
+        for match in MATCHES:
+            Match.objects.create(
+                tournament=tournament,
+                home_team=Team.objects.get(name=match.get('home_team')),
+                away_team=Team.objects.get(name=match.get('away_team')),
+                date=match.get('date'),
+                phase='Group Stage'
+            )
+
+        self.stdout.write(self.style.SUCCESS('group stages matches created'))
